@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2>Home</h2>
+    <ul>
+        {% for quiz in quizes %}
+            <li><a href="{% url 'quiz:detail' %}">{{quiz.title}}</a></li>
+        {% endfor %}
+    </ul>
+
+    {% comment %}
+    {% if questions %}
+    <ul>
+        {% for q in questions %}
+        <li>{{q.title}}</li>
+        <p>{{radios}}</p>
+        <p>{{texts}}</p>
+        <ul>
+            {% for r in radios %}
+                <li>{{r.offered_answer}}</li>
+                <li>{{r.actual_answer}}</li>
+            {% endfor %}
+        </ul>
+        <ul>
+            {% for r in texts %}
+                <li>{{r.offered_answer}}</li>
+                <li>{{r.actual_answer}}</li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+     {% endcomment %}
+
+</div>
+{% endblock %}

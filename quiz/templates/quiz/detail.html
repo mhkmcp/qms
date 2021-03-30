@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2>Detail</h2>
+
+    {% if questions %}
+    <ul>
+        {% for q in questions %}
+
+            <li>{{q.title}} - {{q.id}} - {{q.content_type}} - {{q.object_id}} - {{q.item}} - {{q.question_item_base}}</li>
+<!--            <p>{{q.content_type|cut:"quiz | "}}</p>-->
+
+            {% if q.content_type|cut:"quiz | " == "radio" %}
+                <h6>Radio</h6>
+                <p></p>
+                <form action="">
+                    {% csrf_token %}
+                    <select class="custom-select" id="inputGroupSelect01">
+                    <option selected>Choose...</option>
+                        {% for radio in q.radios_related %}
+                        <option  value="{{q.radio.actual_answer}} ">{{radio.offered_answer}} </option>
+                        {% endfor %}
+                        {% comment %}
+                    <option hidden value="{{q.radio.actual_answer}} ">{{q.radio.actual_answer}} </option>
+                          {% endcomment %}
+                  </select>
+                </form>
+            {% elif q.content_type|cut:"quiz | " == "text" %}
+                <h6>Text</h6>
+                <form action="">
+                    {% csrf_token %}
+                    <p>{{q.text.actual_answer}}</p>
+                    <label for="validationTextarea">Textarea</label>
+                    <textarea class="form-control" id="validationTextarea" placeholder="">{{q.text.actual_answer}}</textarea>
+                </form>
+            {% endif %}
+
+        {% endfor %}
+    </ul>
+
+    {% endif %}
+
+</div>
+{% endblock %}
