@@ -27,49 +27,51 @@
 
         {% endif %}
 
+        {% comment %}
 
-        {% if answer_type == "text" %}
-            <form action="{% url 'staff:detail' quiz_pk %}" method="post">
-                {% csrf_token %}
-                {{ text_form.as_p }}
-                <button type="submit">
-                    Submit
-                </button>
-            </form>
-
-        {% elif answer_type == "radio" %}
-            {% if formset %}
+            {% if answer_type == "text" %}
                 <form action="{% url 'staff:detail' quiz_pk %}" method="post">
-
                     {% csrf_token %}
-
-                    {{ formset.management_form }}
-                    {% if formset.form.forms %}
-                        {{ formset.form.management_form }}
-
-                        {% for form in formset.form.forms %}
-                            {{form.as_p}}
-                            <br><br>
-                        {% endfor %}
-
-                    {% endif %}
-
-                    <input type="submit" value="Submit">
-                </form>
-            {% else %}
-            <form action="{% url 'staff:detail' quiz_pk %}" method="post">
-                    {% csrf_token %}
-                    {{ multiple_choice_form.as_p }}
+                    {{ text_form.as_p }}
                     <button type="submit">
                         Submit
                     </button>
                 </form>
+
+            {% elif answer_type == "radio" %}
+                {% if formset %}
+                    <form action="{% url 'staff:detail' quiz_pk %}" method="post">
+
+                        {% csrf_token %}
+
+                        {{ formset.management_form }}
+                        {% if formset.form.forms %}
+                            {{ formset.form.management_form }}
+
+                            {% for form in formset.form.forms %}
+                                {{form.as_p}}
+                                <br><br>
+                            {% endfor %}
+
+                        {% endif %}
+
+                        <input type="submit" value="Submit">
+                    </form>
+                {% else %}
+                <form action="{% url 'staff:detail' quiz_pk %}" method="post">
+                        {% csrf_token %}
+                        {{ multiple_choice_form.as_p }}
+                        <button type="submit">
+                            Submit
+                        </button>
+                    </form>
+                {% endif %}
+
             {% endif %}
 
+         {% endcomment %}
 
-        {% endif %}
-
-        {% if questions %}
+         {% if questions %}
             <div class="question-list d-flex flex-column">
                 {% for question in questions %}
                     <div><a href="">{{forloop.counter}}. {{question.title}} - {{question.answer_type}}</a></div>

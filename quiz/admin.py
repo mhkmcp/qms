@@ -11,7 +11,7 @@ admin.site.register(Quiz, QuizAdmin)
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ['quiz', 'title', 'answer_type']
+    list_display = ['id', 'quiz', 'title', 'answer_type']
     search_fields = ['quiz', 'title', 'answer_type']
 
 
@@ -19,13 +19,25 @@ admin.site.register(Question, QuestionAdmin)
 
 
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ['answer', 'is_correct']
+    list_display = ['choice_option', 'is_correct']
     search_fields = ['is_correct']
 
 
 admin.site.register(Choice, ChoiceAdmin)
 
 
-admin.site.register(Text)
-admin.site.register(Radio)
+class TextAdmin(admin.ModelAdmin):
+    list_display = ['question', 'input_answer', 'correct_answer']
+    search_fields = ['question', 'input_answer', 'correct_answer']
+
+
+admin.site.register(Text, TextAdmin)
+
+
+class RadioAdmin(admin.ModelAdmin):
+    list_display = ['question', 'answer_option', 'selected_answer']
+    search_fields = ['question', 'answer_option', 'selected_answer']
+
+
+admin.site.register(Radio, RadioAdmin)
 

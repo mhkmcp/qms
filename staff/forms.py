@@ -21,14 +21,14 @@ class QuestionModelForm(forms.ModelForm):
 class TextModelForm(forms.ModelForm):
     class Meta:
         model = Text
-        fields = ['input_answer', 'correct_answer']
+        fields = ['correct_answer']
 
 
 class ChoiceModelForm(forms.ModelForm):
     class Meta:
         model = Choice
-        fields = ['answer', 'is_correct']
+        fields = ['choice_option', 'is_correct']
 
 
 class MultipleChoiceForm(forms.Form):
-    number = forms.IntegerField(label='Number of Choice', min_value=2, max_value=8)
+    number = forms.IntegerField(label='Number of Choices ', min_value=2, max_value=8)

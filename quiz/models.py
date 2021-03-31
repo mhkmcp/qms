@@ -38,7 +38,7 @@ class Question(models.Model):   # Module
 
 
 class Answer(models.Model):
-    question = models.OneToOneField(Question, related_name='%(class)s_related', verbose_name='question ', on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='%(class)s_related', verbose_name='question ', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -59,22 +59,25 @@ class Text(Answer):
 
 
 class Choice(models.Model):
-    answer = models.CharField(max_length=255, null=True, blank=True)
+    choice_option = models.CharField(max_length=255, null=True, blank=True)
     is_correct = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
-        return self.answer
+        return self.choice_option
 
 
 class Radio(Answer):
-    answers = models.ForeignKey(Choice,
-                                default=None,
-                                related_name='radio_related',
-                                on_delete=models.DO_NOTHING,
-                                null=True, blank=True
-                                )
+    answer_option = models.ForeignKey(Choice,
+                                      default=None,
+                                      related_name='radio_options',
+                                      on_delete=models.DO_NOTHING,
+                                      null=True, blank=True)
+    selected_answer = models.OneToOneField(Choice, default=None,
+                                           related_name='radio_selected',
+                                           on_delete=models.DO_NOTHING,
+                                           null=True, blank=True)
 
-    # answers = ArrayField(
+    # answer_options = ArrayField(
     #     models.ForeignKey(Choice, default=None,
     #                       on_delete=models.DO_NOTHING,
     #                       null=True, blank=True),

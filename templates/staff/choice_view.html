@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="container">
+
+        <h2>Staff::CHOICE VIEW</h2>
+        <h4>{{quiz.title}}</h4>
+
+        {% if note %}
+            <p>{{note}}</p>
+        {% endif  %}
+
+        <div class="radio-form">
+            {% if multiple_choice_form %}
+                <form action="{% url 'staff:choice' %}" method="post">
+                    {% csrf_token %}
+                    {{ multiple_choice_form.as_p }}
+                    <button type="submit">
+                        Submit
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+
+
+        {% if questions %}
+            <div class="question-list d-flex flex-column">
+                {% for question in questions %}
+                    <div><a href="">{{forloop.counter}}. {{question.title}} - {{question.answer_type}}</a></div>
+                {% endfor %}
+            </div>
+
+        {% endif %}
+
+    </div>
+
+{% endblock %}

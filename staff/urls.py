@@ -1,10 +1,14 @@
 from django.urls import path
-from .views import index, detail, radio_view
+from .views import index, detail, radio_view, text_view, choice
 
 app_name = 'staff'
 
 urlpatterns = [
     path('', index, name='home'),
-    path('detail/<int:quiz_pk>', detail, name='detail'),
-    # path('detail/<int:quiz_pk>/radio', radio_view, name='radio-form-view'),
+    path('<int:quiz_pk>', detail, name='detail'),
+    path('radio', radio_view, name='radio'),
+    path('text', text_view, name='text'),
+    path('choice', choice, name='choice'),
+
+    # path('edit')
 ]
