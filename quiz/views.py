@@ -1,5 +1,8 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from .models import Question, Radio, Text, Quiz
+from .forms import TextForm
+
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from pprint import pprint
 
@@ -14,28 +17,31 @@ def index(request):
 
 def detail(request):
     qs = Question.objects.all()
+
+    page = request.GET.get('page', 1)
+
+    paginator = Paginator(qs, 1)
+    try:
+        qs = paginator.page(page)
+    except PageNotAnInteger:
+        qs = paginator.page(1)
+    except EmptyPage:
+        qs = paginator.page(paginator.num_pages)
+
     context = {
         'questions': qs,
+        'user': request.user.username,
+        'text_form': TextForm()
     }
 
-    print('\n Question')
-
-    for q in qs:
-        content_type = str(q.content_type).split(' | ')[-1]
-        # pprint(vars(q))
-        if content_type == 'radio':
-            radios = Radio.objects.filter(question__id=q.id)
+    # for q in qs:
+        # if content_type == 'radio':
+        #     radios = Radio.objects.filter(question__id=q.id)
             # radios = q.radio_set.all
             # radios = q.radio_set.all()
-            print(radios)
-            # pprint(vars(radio[0]))
-            # print(radio[0].actual_answer)
-            # print(q.text_actual_answer)
-            pass
-        else:
+        # else:
             # text = Text.objects.get(question__id=q.id)
             # pprint(vars(text))
-            pass
         # print(q.content_type)
 
     return render(request, 'quiz/detail.html', context)

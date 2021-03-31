@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.contenttypes.models import ContentType
@@ -13,23 +14,31 @@ class Quiz(models.Model):
         return self.title
 
 
+ANS_TYPE = (
+    ('radio', 'Radio'),
+    ('text', 'Text')
+)
+
+
 class Question(models.Model):   # Module
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     title = models.CharField(max_length=255, blank=False, null=False)
-    
-    content_type = models.ForeignKey(ContentType, 
-                                     on_delete=models.CASCADE,
-                                     limit_choices_to={'model__in': ('text', 'radio')})
 
-    object_id = models.PositiveIntegerField()
-    item = GenericForeignKey('content_type', 'object_id')
+    answer_type = models.CharField(max_length=31, default='radio', choices=ANS_TYPE, blank=False, null=False)
     
+    # content_type = models.ForeignKey(ContentType,
+    #                                  on_delete=models.CASCADE,
+    #                                  limit_choices_to={'model__in': ('text', 'radio')})
+    #
+    # object_id = models.PositiveIntegerField()
+    # item = GenericForeignKey('content_type', 'object_id')
+    #
     def __str__(self):
         return self.title
 
 
 class Answer(models.Model):
-    question = models.ForeignKey(Question, related_name='%(class)s_related', verbose_name='question ', on_delete=models.CASCADE)
+    question = models.OneToOneField(Question, related_name='%(class)s_related', verbose_name='question ', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -42,34 +51,36 @@ class Answer(models.Model):
     
     
 class Text(Answer):
-    offered_answer = models.TextField(null=True, blank=True)
-    actual_answer = models.TextField(null=True, blank=True)
+    input_answer = models.TextField(null=True, blank=True)
+    correct_answer = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.question.title
 
-    # @property
-    # def type(self):
-    #     return "text"
 
-
-class Option(models.Model):
+class Choice(models.Model):
     answer = models.CharField(max_length=255, null=True, blank=True)
+    is_correct = models.BooleanField(default=False, null=True, blank=True)
 
     def __str__(self):
         return self.answer
 
 
 class Radio(Answer):
-    offered_answer = models.ForeignKey(Option, on_delete=models.CASCADE, related_name='radios_offered')
-    actual_answer = models.OneToOneField(Option, on_delete=models.CASCADE, related_name='radios_actual')
+    answers = models.ForeignKey(Choice,
+                                default=None,
+                                related_name='radio_related',
+                                on_delete=models.DO_NOTHING,
+                                null=True, blank=True
+                                )
+
+    # answers = ArrayField(
+    #     models.ForeignKey(Choice, default=None,
+    #                       on_delete=models.DO_NOTHING,
+    #                       null=True, blank=True),
+    #     blank=True, null=True,
+    #     default=list()
+    # )
 
     def __str__(self):
         return self.question.title
-
-    # @property
-    # def type(self):
-    #     return "radio"
-
-
-
