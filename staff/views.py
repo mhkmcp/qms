@@ -32,11 +32,6 @@ def detail(request, quiz_pk):
             question.quiz = quiz
             question.save()
 
-            # question = Question.objects.create(
-            #     quiz=quiz,
-            #     title=question_form.cleaned_data['title'],
-            #     answer_type=question_form.cleaned_data['answer_type'])
-
             request.session['question_pk'] = question.pk
             answer_type = question_form.cleaned_data['answer_type']
             context['answer_type'] = question_form.cleaned_data['answer_type']
@@ -67,12 +62,11 @@ def radio_view(request):
     if request.method == 'POST':
         filled_formset = ChoiceFormSet(request.POST)
         if filled_formset.is_valid():
-            choices = []
             for form in filled_formset:
                 choice = form.save(commit=False)
-                choice.save()
                 question = Question.objects.get(pk=request.session['question_pk'])
-                Radio(question=question, answer_option=choice).save()
+                choice.question = question
+                choice.save()
 
             note = 'Choice have been Created!'
             context['note'] = note

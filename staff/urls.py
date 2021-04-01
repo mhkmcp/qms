@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import index, detail, radio_view, text_view, choice
+from .views import *
 
 app_name = 'staff'
 

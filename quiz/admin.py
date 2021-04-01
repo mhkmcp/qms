@@ -1,10 +1,10 @@
 from django.contrib import admin
-from .models import Quiz, Question, Choice, Text, Radio
+from .models import Quiz, Question, Choice, Text
 
 
 class QuizAdmin(admin.ModelAdmin):
-    list_display = ['title', 'timeline']
-    search_fields = ['title', 'timeline']
+    list_display = ['title', 'time']
+    search_fields = ['title', 'time']
 
 
 admin.site.register(Quiz, QuizAdmin)
@@ -19,7 +19,7 @@ admin.site.register(Question, QuestionAdmin)
 
 
 class ChoiceAdmin(admin.ModelAdmin):
-    list_display = ['choice_option', 'is_correct']
+    list_display = ['question', 'text', 'is_correct', 'is_selected']
     search_fields = ['is_correct']
 
 
@@ -32,12 +32,4 @@ class TextAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Text, TextAdmin)
-
-
-class RadioAdmin(admin.ModelAdmin):
-    list_display = ['question', 'answer_option', 'selected_answer']
-    search_fields = ['question', 'answer_option', 'selected_answer']
-
-
-admin.site.register(Radio, RadioAdmin)
 

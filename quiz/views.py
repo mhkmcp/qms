@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404
-from .models import Question, Radio, Text, Quiz
-from .forms import TextForm, RadioModelForm
+from .models import *
+from .forms import *
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -19,28 +19,45 @@ def detail(request, quiz_pk):
     request.session['quiz_pk'] = quiz_pk
     qs = Question.objects.filter(quiz_id=quiz_pk)
     objs = Question.objects.filter(quiz_id=quiz_pk)
-    page = request.GET.get('page', 1)
+
+    if request.method == 'POST':
+        page = request.session['page']
+    else:
+        page = request.GET.get('page', 1)
+        request.session['page'] = page
     paginator = Paginator(qs, 1)
+
     try:
         qs = paginator.page(page)
-        # print('QS: ', qs)
-        question = objs[qs.start_index()-1]
-        print(question.id, question, question.answer_type)
+        question = objs[qs.end_index()-1]
+        print(question.id, question.answer_type, question.title)
+
+        # for radio in Radio.objects.filter(question_id=question.id):
+        #     print(radio.answer_option, radio.answer_option.is_correct)
+
         if request.method == 'POST':
             if question.answer_type == 'radio':
-                radio_form = RadioModelForm(request.POST)
-                print(radio_form)
-                if radio_form.is_valid():
-                    answer = radio_form.cleaned_data['answer_option']
-                    print('Selected Ans: ', answer)
-                    radio = radio_form.save()
-                    print(radio)
-            elif question.answer_type == 'text':
+                data = list(request.POST.items())[1]
+                selected_choice = list(data)[1]
+                print(selected_choice)
+                Choice.objects.filter(question_id=question.id).update(is_selected=False)
+                dcts = {
+                    'question': question.id,
+                    'is_selected': True
+                }
+                Choice.objects.filter(id=selected_choice).update(**dcts)
+                # 'Female': ['57'],
+                # if choice_form.is_valid():
+                #     form = choice_form.save(commit=False)
+                #     print('Form: ', choice_form)
+                    # answer = form.cleaned_data['text']
+                    # print('Selected Ans: ', answer)
+
+            else:
                 text_form = TextForm(request.POST)
-                print(text_form)
-                # if text_form.is_valid():
-                #     text = text_form.save()
-                #     print(text)
+                if text_form.is_valid():
+                    print(question.id, question.answer_type, question.title)
+                    Text.objects.filter(question_id=question.id).update(input_answer=text_form.cleaned_data['input_answer'])
 
     except PageNotAnInteger:
         qs = paginator.page(1)
@@ -52,10 +69,16 @@ def detail(request, quiz_pk):
         'questions': qs,
         'user': request.user.username,
         'text_form': TextForm(),
-        'radio_form': RadioModelForm()
+        'choice_form': ChoiceForm(),
+        'choices': Choice.objects.filter(question_id=question.id) or None
     }
 
     return render(request, 'quiz/detail.html', context)
+
+
+def submit(request):
+    if request.method == 'POST':
+        pass
 
 
 def test(request, quiz_pk):
@@ -71,7 +94,7 @@ def test(request, quiz_pk):
         'questions': qs,
         'user': request.user.username,
         'text_form': TextForm(),
-        'radio_form': RadioModelForm()
+        # 'radio_form': RadioModelForm()
     }
 
     return render(request, 'quiz/test.html', context)

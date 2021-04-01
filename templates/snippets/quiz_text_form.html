@@ -1,4 +1,5 @@
-<form action="{% url 'quiz:detail' quiz_pk %}" method="post">
+<form action="{% url 'quiz:detail' quiz_pk %}" method="post" id="form_id"
+    >
     {% csrf_token %}
     {{ text_form.as_p }}
     <input type="hidden" name="question" value="{{q.pk}}">

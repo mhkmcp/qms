@@ -27,7 +27,7 @@ class TextModelForm(forms.ModelForm):
 class ChoiceModelForm(forms.ModelForm):
     class Meta:
         model = Choice
-        fields = ['choice_option', 'is_correct']
+        fields = ['text', 'is_correct']
 
 
 class MultipleChoiceForm(forms.Form):
