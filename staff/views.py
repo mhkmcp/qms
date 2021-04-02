@@ -5,6 +5,7 @@ from django.forms import formset_factory, modelformset_factory
 from django.forms.models import model_to_dict
 from django.contrib.auth.decorators import login_required
 from .decorators import allowed_users
+from .forms import QuizModelForm
 
 
 # @login_required(login_url='/accounts/login/')
@@ -12,8 +13,15 @@ from .decorators import allowed_users
 def index(request):
     if request.user.groups.all():
         context = {
-            'quizes': Quiz.objects.all()
+            'quizzes': Quiz.objects.all(),
         }
+        if request.method == 'POST':
+            quiz_form = QuizModelForm(request.POST)
+            if quiz_form.is_valid():
+                quiz = quiz_form.save()
+                request.session['quiz_pk'] = quiz.pk
+        else:
+            context['quiz_form'] = QuizModelForm()
         return render(request, 'staff/index.html', context)
     else:
         return HttpResponse("You're not allowed!")

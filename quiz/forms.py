@@ -25,15 +25,12 @@ class TextForm(forms.ModelForm):
 class ChoiceForm(forms.Form):
     choice = forms.CharField(widget=forms.RadioSelect)
 
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     self.fields['question_id'].queryset = Question.objects.none()
 
-    # class Meta:
-    #     model = Choice
-    #     fields = ['text']
-    #     widget = {
-    #         'text': forms.CharField(label='Choice Option')
-    #     }
+class ChoiceModelForm(forms.ModelForm):
 
-
+    class Meta:
+        model = Choice
+        fields = ['text']
+        widget = {
+            'text': forms.RadioSelect
+        }

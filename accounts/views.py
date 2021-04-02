@@ -29,10 +29,13 @@ def login_user(request):
 
         if user is not None:
             login(request, user)
-            # next = request.POST.get('next')
-            # print('NEXT: ', next)
             messages.success(request, 'User Signup Success')
-            return redirect('quiz:home')
+            if user.groups.all():
+                return redirect('staff:home')
+            
+            else:
+                return redirect('quiz:home')
+
         else:
             messages.error(request, 'Username or Password is Incorrect')
 

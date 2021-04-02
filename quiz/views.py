@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, get_list_or_404, redirect
 from .models import *
 from .forms import *
+import time
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from pprint import pprint
 from django.contrib.auth.decorators import login_required
@@ -8,7 +9,7 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='/accounts/login/')
 def index(request):
-    quizzes = Quiz.objects.all().exclude(id__in=QuizList.objects.filter(user_id=request.user.id))
+    quizzes = Quiz.objects.all().exclude(id__in=QuizList.objects.filter(user_id=request.user.id, is_available=False))
     context = {
         'quizzes': quizzes,
     }
@@ -16,8 +17,13 @@ def index(request):
     return render(request, 'quiz/index.html', context)
 
 
+# def get_remaining_time(remaining, lost=0):
+
+
 @login_required(login_url='/accounts/login/')
 def detail(request, quiz_pk):
+
+
     request.session['quiz_pk'] = quiz_pk
     qs = Question.objects.filter(quiz_id=quiz_pk)
     quiz = Quiz.objects.get(id=quiz_pk)
@@ -36,17 +42,18 @@ def detail(request, quiz_pk):
         question = obj[qs.end_index()-1]
         print(question.id, question.answer_type, question.title)
 
-        # for radio in Radio.objects.filter(question_id=question.id):
-        #     print(radio.answer_option, radio.answer_option.is_correct)
-
         if request.method == 'POST':
             if question.answer_type == 'radio':
+                # existing_choice = Choice.objects.filter(question_id=question.id,
+                #                                         user_id=request.user.id, is_selected=True)
+                # choice_form = ChoiceModelForm(request.POST,
+                #                               data=existing_choice[0])
                 data = list(request.POST.items())[1]
                 print(data)
                 text_choice = list(data)[0]
                 selected_choice = list(data)[1]
                 print(text_choice, selected_choice)
-                pass
+                # pass
 
                 existing_choice = Choice.objects.filter(question_id=question.id,
                                                         user_id=request.user.id, is_selected=True)
@@ -87,20 +94,39 @@ def detail(request, quiz_pk):
     except EmptyPage:
         qs = paginator.page(paginator.num_pages)
 
-    choices = Choice.objects.filter(question_id=question.id).exclude(text=None)
-
-    existing_text = Text.objects.filter(question_id=question.id, user_id=request.user.id)
-
     context = {
         'quiz_pk': quiz_pk,
         'quiz': quiz,
         'questions': qs,
         'user': request.user.username,
-        'text_form': TextForm(initial={'input_answer': existing_text[0].input_answer}),
-        'choice_form': ChoiceForm(),
-        'choices':  choices or None,
-        'text': existing_text
+        # 'remaining_time': x
     }
+
+    if question.answer_type == 'radio':
+        try:
+            choices = Choice.objects.filter(question_id=question.id).exclude(text=None)
+            choice_text = Choice.objects.filter(question_id=question.id, user_id=request.user.id)[0].id
+
+            context['choice_text'] = choice_text or None
+        except Exception as ex:
+            print(ex)
+
+        context['choices'] = choices or None
+        context['choice_form'] = ChoiceForm()
+
+    else:
+        input_answer = None
+        try:
+            existing_text = Text.objects.filter(question_id=question.id, user_id=request.user.id)
+            if len(existing_text):
+                input_answer = existing_text[0].input_answer
+            context['text'] = existing_text or None
+        except Exception as ex:
+            print(ex)
+
+        context['text_form'] = TextForm(initial={'input_answer': input_answer} or None)
+
+    # QuizList.objects.filter(user_id=request.user.id).update(is_available=True)
 
     return render(request, 'quiz/detail.html', context)
 

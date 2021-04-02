@@ -32,3 +32,10 @@ class ChoiceModelForm(forms.ModelForm):
 
 class MultipleChoiceForm(forms.Form):
     number = forms.IntegerField(label='Number of Choices ', min_value=2, max_value=8)
+
+
+class QuizModelForm(forms.ModelForm):
+    class Meta:
+        model = Quiz
+        fields = ['title', 'time']
+

@@ -3,14 +3,25 @@
 {% block content %}
 
 <div class="container">
+    <ul class="d-flex flex-row justify-content-between">
+        <li style="list-style:none;"><a href="{% url 'quiz:home' %}">Quiz</a></li>
+        <li  style="list-style:none;"><a href="{% url 'accounts:logout' %}">Logout</a></li>
+    </ul>
 
-    <h2>Staff's Home</h2>
+    <hr>
+    <h2 class="my-3 text-center">List of Existing Quizzes</h2>
 
-    <ul>
-        {% for quiz in quizes %}
-            <li><a href="{% url 'staff:detail' quiz_pk=quiz.pk %}">{{quiz.title}} - {{quiz.pk}}</a></li>
+    <ul class="text-center">
+        {% for quiz in quizzes %}
+            <li style="list-style:none;"><a href="{% url 'staff:detail' quiz_pk=quiz.pk %}">{{quiz.title}} </a></li>
         {% endfor %}
     </ul>
+
+    <hr>
+
+    <div class="mt-4">
+           {% include 'snippets/quiz_form.html' %}
+    </div>
 
 
 </div>

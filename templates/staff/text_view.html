@@ -2,10 +2,9 @@
 
 {% block content %}
 
-    <div class="container">
+    <div class="container mt-3">
 
-        <h2>Staff::TEXT INPUT VIEW</h2>
-        <h4>{{quiz.title}}</h4>
+        <h4>Provide an Approximate Answer for the Question</h4>
 
         <div class="text-form">
             <form action="{% url 'staff:text' %}" method="post">

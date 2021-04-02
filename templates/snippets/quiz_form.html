@@ -1,0 +1,16 @@
+<div class="quiz-form text-center mt-3">
+    <h4 class="my-3">Add Another Quiz</h4>
+
+    <form action="{% url 'staff:home' %}"
+      method="post" id="form_id">
+
+    {% csrf_token %}
+    {{ quiz_form.as_p }}
+
+    <button type="submit" class="btn btn-success">
+        Submit
+    </button>
+
+</form>
+
+</div>

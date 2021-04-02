@@ -4,10 +4,18 @@
 
 <div class="container">
 
-    <h2>Home</h2>
+    <ul class="d-flex flex-row justify-content-between">
+        {% if request.user.groups.all %}
+            <li  style="list-style:none;"><a href="{% url 'staff:home' %}">Admin</a></li>
+        {% else %}
+            <li style="list-style:none;">Home</li>
+        {% endif %}
+
+        <li  style="list-style:none;"><a href="{% url 'accounts:logout' %}">Logout</a></li>
+    </ul>
     <ul>
         {% for quiz in quizzes %}
-            <li><a href="{% url 'quiz:detail' quiz.id %}" onclick="timerStart({{quiz.time}});">{{quiz.title}}</a>
+            <li  style="list-style:none;"><a href="{% url 'quiz:detail' quiz.id %}">{{quiz.title}}</a>
             <p class="d-none" id="catch_time">{{quiz.time}}</p></li>
         {% endfor %}
     </ul>
