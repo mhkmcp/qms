@@ -8,7 +8,7 @@ from .decorators import allowed_users
 from .forms import QuizModelForm
 
 
-# @login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login/')
 # @allowed_users(allowed_roles=['admin'])
 def index(request):
     if request.user.groups.all():
@@ -27,7 +27,7 @@ def index(request):
         return HttpResponse("You're not allowed!")
 
 
-# @login_required(login_url='/accounts/login/')
+@login_required(login_url='/accounts/login/')
 # @allowed_users(allowed_roles=['admin'])
 def detail(request, quiz_pk):
     if request.user.groups.all():
