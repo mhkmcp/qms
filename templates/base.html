@@ -51,6 +51,52 @@
 
 <!--      console.log('FORM SUBMIT STOPPED');-->
 
+    var flag = false;
+
+
+
+
+
+      function startTimer(duration, display) {
+          var timer = duration, minutes, seconds;
+          localStorage.setItem('timer', duration)
+          setInterval(function () {
+              timer = localStorage.getItem('timer')
+              minutes = parseInt(timer / 60, 10);
+              seconds = parseInt(timer % 60, 10);
+
+              minutes = minutes < 10 ? "0" + minutes : minutes;
+              seconds = seconds < 10 ? "0" + seconds : seconds;
+
+              display.text(minutes + ":" + seconds);
+              $("#catch_time").text(minutes + ":" + seconds);
+
+              if (--timer < 0) {
+                  timer = duration;
+              }
+              localStorage.setItem('timer', timer);
+          }, 1000);
+      }
+
+        localStorage.removeItem('timer');
+
+
+      jQuery(function ($){
+<!--          function timerStart() {-->
+            if(localStorage.getItem('timer')) {
+              var time = localStorage.getItem('timer');
+            }
+            else {
+              var time = parseInt($("#catch_time").text());
+              console.log('time', time);
+              localStorage.setItem('timer', time);
+            }
+
+            var seconds = time * 60, display = $('#remaining_time');
+            startTimer(seconds, display);
+<!--          }-->
+      });
+
 
 });
 

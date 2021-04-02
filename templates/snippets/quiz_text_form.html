@@ -1,9 +1,14 @@
 <form action="{% url 'quiz:detail' quiz_pk %}" method="post" id="form_id"
     >
     {% csrf_token %}
+    <p>{{text.input_answer}} </p>
     {{ text_form.as_p }}
+
     <input type="hidden" name="question" value="{{q.pk}}">
-    <button type="submit">
-        Submit
-    </button>
+    <div class="buttons d-flex flex-row justify-content-between mt-4">
+        <button type="submit" class="btn btn-success">
+            Submit
+        </button>
+        <a href="{% url 'quiz:finish' %}" class="btn btn-info">Finish Exam</a>
+    </div>
 </form>

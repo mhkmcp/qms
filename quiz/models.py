@@ -6,9 +6,8 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 
 
 class Quiz(models.Model):
-    user = models.ForeignKey(User, default=None, on_delete=models.SET_NULL, blank=True, null=True)
+    # user = models.ForeignKey(User, default=None, on_delete=models.SET_NULL, blank=True, null=True)
     title = models.CharField(max_length=255, null=False, blank=False)
-    # timeline = models.PositiveIntegerField(default=0, blank=False, null=False)
     time = models.PositiveIntegerField(default=0, blank=False, null=False)
     is_available = models.BooleanField(default=True, blank=True, null=True)
 
@@ -23,6 +22,16 @@ class Quiz(models.Model):
         return self.title
 
 
+class QuizList(models.Model):
+    quiz = models.ForeignKey(Quiz, default=None, on_delete=models.SET_NULL, blank=True, null=True)
+    user = models.ForeignKey(User, default=None, on_delete=models.SET_NULL, blank=True, null=True)
+
+    is_available = models.BooleanField(default=True, blank=True, null=True)
+
+    def __str__(self):
+        return self.quiz.title
+
+
 ANS_TYPE = (
     ('radio', 'Radio'),
     ('text', 'Text')
@@ -31,6 +40,8 @@ ANS_TYPE = (
 
 class Question(models.Model):   # Module
     quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, default=None, on_delete=models.SET_NULL, blank=True, null=True)
+
     title = models.CharField(max_length=255, blank=False, null=False)
 
     answer_type = models.CharField(max_length=31, default='radio', choices=ANS_TYPE, blank=False, null=False)

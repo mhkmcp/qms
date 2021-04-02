@@ -1,7 +1,26 @@
-<form action="">
-    {% csrf_token %}
-    {% radio_form.as_p %}
-    <button type="submit">
-        Submit
-    </button>
-</form>
+<form action="{% url 'quiz:detail' quiz_pk %}" method="post" id="form_id">
+                        {% csrf_token %}
+<!--                        {{ choice_form.as_p }}-->
+
+                        <div class="radio-options d-flex flex-row">
+
+                            {% for choice in choices %}
+<!--                            <p>{{choice.id}} - {{choice.question}} - {{choice.text}} </p>-->
+                            <div class="radio-option mr-4">
+                                <input type="radio" id="id_{{choice.text}}"
+                                       name="{{choice.text}}" value="{{choice.id}}">
+                                <label for="id_{{choice.text}}">{{choice.text}}</label>
+                            </div>
+                            {% endfor %}
+
+                        </div>
+
+
+                        <input type="hidden" name="question" value="{{q.pk}}">
+                        <div class="buttons d-flex flex-row justify-content-between mt-4">
+                            <button type="submit" class="btn btn-success">
+                                Submit
+                            </button>
+                            <a href="{% url 'quiz:finish' %}" class="btn btn-info">Finish Exam</a>
+                        </div>
+                    </form>

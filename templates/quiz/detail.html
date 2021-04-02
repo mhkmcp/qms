@@ -5,12 +5,14 @@
 <div class="container">
 
     <h2 class="text-center mt-3">Assignment</h2>
+    <p class="d-none" id="catch_time">{{quiz.time}}</p></li>
+
     <div class="header d-flex flex-row justify-content-between mt-3 mb-3">
         <div class="left">
             <span>Welcome @<strong>{{user}}</strong> </span>
         </div>
-        <div class="right">
-            <span>Time Remaining: <strong>12:35</strong></span>
+        <div class="right info">
+            <span>Time Remaining: <strong class="time" id="remaining_time">10:00</strong></span>
         </div>
     </div>
 
@@ -22,23 +24,23 @@
                 {% if questions.has_other_pages %}
                     <ul class="pagination">
                         {% if questions.has_previous %}
-                          <li><a href="?page={{ questions.previous_page_number }}">Previous</a></li>
+                          <li class="mr-2"><a href="?page={{ questions.previous_page_number }}">Previous</a></li>
                         {% else %}
-                          <li class="disabled"><span>Previous</span></li>
+                          <li class="disabled mr-2"><span>Previous</span></li>
                         {% endif %}
 
                         {% for i in questions.paginator.page_range %}
                           {% if questions.number == i %}
-                            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                            <li class="active mr-2"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
                           {% else %}
-                            <li><a href="?page={{ i }}">{{ i }}</a></li>
+                            <li class="mr-2"><a href="?page={{ i }}">{{ i }}</a></li>
                           {% endif %}
                         {% endfor %}
 
                         {% if questions.has_next %}
-                          <li><a href="?page={{ questions.next_page_number }}">Next</a></li>
+                          <li class="mr-2"><a href="?page={{ questions.next_page_number }}">Next</a></li>
                         {% else %}
-                          <li class="disabled"><span>Next</span></li>
+                          <li class="disabled mr-2"><span>Next</span></li>
                         {% endif %}
                       </ul>
                 {% endif %}
@@ -50,32 +52,8 @@
                 <h4>{{q.title}}</h4>
                 <input type="hidden" name="question" value="{{q.id}}">
                 {% if q.answer_type == "radio" %}
-                    <p>{{ q.radio_set.all }}</p>
-<!--                    include 'snippets/quiz_radio_form.html -->
-                    <form action="{% url 'quiz:detail' quiz_pk %}" method="post" id="form_id"
-                    >
-                        {% csrf_token %}
-<!--                        {{ choice_form.as_p }}-->
+                    {% include 'snippets/quiz_radio_form.html' with quiz_pk=quiz_pk %}
 
-                        <div class="radio-options d-flex flex-row">
-
-                            {% for choice in choices %}
-<!--                            <p>{{choice.id}} - {{choice.question}} - {{choice.text}} </p>-->
-                            <div class="radio-option mr-4">
-                                <input type="radio" id="id_{{choice.text}}"
-                                       name="{{choice.text}}" value="{{choice.id}}">
-                                <label for="id_{{choice.text}}">{{choice.text}}</label>
-                            </div>
-                            {% endfor %}
-
-                        </div>
-
-
-                        <input type="hidden" name="question" value="{{q.pk}}">
-                        <button type="submit">
-                            Submit
-                        </button>
-                    </form>
                 {% elif q.answer_type == "text" %}
                     {% include 'snippets/quiz_text_form.html' with text_form=text_form quiz_pk=quiz_pk %}
                 {% endif %}

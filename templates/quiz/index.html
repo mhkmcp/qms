@@ -7,8 +7,8 @@
     <h2>Home</h2>
     <ul>
         {% for quiz in quizzes %}
-            <li><a href="{% url 'quiz:detail' quiz.pk %}">{{quiz.title}}</a></li>
-            <li><a href="{% url 'quiz:test' quiz.pk %}">Testing</a></li>
+            <li><a href="{% url 'quiz:detail' quiz.id %}" onclick="timerStart({{quiz.time}});">{{quiz.title}}</a>
+            <p class="d-none" id="catch_time">{{quiz.time}}</p></li>
         {% endfor %}
     </ul>
 
